@@ -13,6 +13,7 @@ public class Piece {
     public char getType() {
         return this.type;
     }
+    public boolean isWhite() {return isWhite;}
     public int[] getPosition() {
         return position;
     }

@@ -1,56 +1,117 @@
-import javax.swing.*;
-import java.awt.*;
+// Some code taken from https://github.com/Khald64/ChessGame/blob/main/src/ChessGame.java
+import jdk.jfr.StackTrace;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class ChessGame extends JFrame {
-    private final int boardSize = 800;
-    private final int numSquares = 8;
-    private final int squareSize = boardSize / numSquares;
-    private Board board;
+/**
+ *
+ * @author Khouiled
+ */
+public class ChessGame {
 
-    public ChessGame(Board board) {
-        setTitle("Chess Game");
-        setSize(boardSize, boardSize);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        this.board = board;
-    }
+    public ChessGame() {
+        Image[] imgs =new Image[12];
+        System.out.println("Checkpoint 1");
+        try {
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        for (int rank = 0; rank < numSquares; rank++) {
-            for (int file = 0; file < numSquares; file++) {
-                int x = file * squareSize;
-                int y = (boardSize-squareSize)-(rank * squareSize);
-
-                if ((rank + file) % 2 != 0) {
-                    g.setColor(Color.WHITE);
-                } else {
-                    g.setColor(Color.GRAY);
-                }
-                g.fillRect(x, y, squareSize, squareSize);
-                if (board.getPiece(rank, file) != null) {
-                    String filePath;
-                    if (board.getPiece(rank, file).isWhite()) {
-                        filePath = "src/White ";
-                    } else {
-                        filePath = "src/Black ";
-                    }
-                    filePath += board.getPiece(rank, file).getType() + ".png";
-                    Image image;
-                    try {
-                        image = ImageIO.read(new File(filePath));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    g.drawImage(image, x, y, null);
-                }
-            }
+            imgs[0] = ImageIO.read(new File("src/Black b.png"));
+            imgs[1] = ImageIO.read(new File("src/Black k.png"));
+            imgs[2] = ImageIO.read(new File("src/Black n.png"));
+            imgs[3] = ImageIO.read(new File("src/Black p.png"));
+            imgs[4] = ImageIO.read(new File("src/Black q.png"));
+            imgs[5] = ImageIO.read(new File("src/Black r.png"));
+            imgs[6] = ImageIO.read(new File("src/White b.png"));
+            imgs[7] = ImageIO.read(new File("src/White k.png"));
+            imgs[8] = ImageIO.read(new File("src/White n.png"));
+            imgs[9] = ImageIO.read(new File("src/White p.png"));
+            imgs[10] = ImageIO.read(new File("src/White q.png"));
+            imgs[11] = ImageIO.read(new File("src/White r.png"));
         }
+        catch (Exception e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("Checkpoint 2");
+        JFrame frame = new JFrame();
+        frame.setBounds(10, 10, 512, 512);
+        frame.setUndecorated(true);
+        System.out.println("Checkpoint 3");
+        JPanel pn=new JPanel(){
+            @Override
+            public void paint(Graphics g) {
+                boolean white=true;
+                for(int y= 0;y<8;y++){
+                    for(int x= 0;x<8;x++){
+                        if(white){
+                            g.setColor(new Color(235,235, 208));
+                        }else{
+                            g.setColor(new Color(119, 148, 85));
+
+                        }
+                        g.fillRect(x*64, y*64, 64, 64);
+                        white=!white;
+                    }
+                    white=!white;
+                }
+                System.out.println("Checkpoint 4");
+                String color = "" + Main.allBoards[0].getBoard();
+                long l = Main.allBoards[1].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        g.drawImage(imgs[3 + Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                    l/=2;
+                }
+                l = Main.allBoards[2].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        g.drawImage(imgs[Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                    l/=2;
+                }
+                l = Main.allBoards[3].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        g.drawImage(imgs[2 + Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                }
+                l = Main.allBoards[4].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        g.drawImage(imgs[5+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                    l/=2;
+                }
+                l = Main.allBoards[5].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        g.drawImage(imgs[1+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                    l/=2;
+                }
+                l = Main.allBoards[6].getBoard();
+                for (int i = 0; i < 64; i++) {
+                    if (l%2 == 1) {
+                        System.out.println("King");
+                        g.drawImage(imgs[4+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    }
+                    l/=2;
+                }
+                System.out.println("Checkpoint 5");
+            }
+        };
+        System.out.println("Checkpoint 6");
+        frame.add(pn);
+        frame.setDefaultCloseOperation(3);
+        frame.setVisible(true);
     }
 }

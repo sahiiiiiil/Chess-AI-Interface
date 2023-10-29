@@ -60,57 +60,50 @@ public class ChessGame {
                         g.fillRect(x*64, y*64, 64, 64);
                         white=!white;
                     }
-                    white=!white;
+                    white = !white;
                 }
                 System.out.println("Checkpoint 4");
                 String color = "" + Main.allBoards[0].getBoard();
                 long l = Main.allBoards[1].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        g.drawImage(imgs[3 + Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[1].get((byte)i)) == 1) {
+                        g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
-                    l/=2;
                 }
                 l = Main.allBoards[2].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        g.drawImage(imgs[Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[2].get((byte)i)) == 1) {
+                        g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
-                    l/=2;
                 }
                 l = Main.allBoards[3].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        g.drawImage(imgs[2 + Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[3].get((byte)i)) == 1) {
+                        g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 6, this);
                     }
                 }
                 l = Main.allBoards[4].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        g.drawImage(imgs[5+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[4].get((byte)i)) == 1) {
+                        g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 61, this);
                     }
-                    l/=2;
                 }
                 l = Main.allBoards[5].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        g.drawImage(imgs[1+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[5].get((byte)i)) == 1) {
+                        g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
-                    l/=2;
                 }
                 l = Main.allBoards[6].getBoard();
                 for (int i = 0; i < 64; i++) {
-                    if (l%2 == 1) {
-                        System.out.println("King");
-                        g.drawImage(imgs[4+Integer.parseInt(color.substring(i, i+1))*6], (i%8)*64, (i/8)*64, this);
+                    if (Math.abs(Main.allBoards[6].get((byte)i)) == 1) {
+                        g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
-                    l/=2;
                 }
                 System.out.println("Checkpoint 5");
             }
         };
-        System.out.println("Checkpoint 6");
-        frame.add(pn);
+        frame.add(p);
         frame.setDefaultCloseOperation(3);
         frame.setVisible(true);
     }

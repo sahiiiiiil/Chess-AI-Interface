@@ -19,7 +19,8 @@ import javax.swing.JPanel;
 public class ChessGame {
 
     public ChessGame() {
-        Image[] imgs =new Image[12];
+            PrecomputedData.precompute();
+        Image[] imgs = new Image[12];
         System.out.println("Checkpoint 1");
         try {
 
@@ -35,66 +36,58 @@ public class ChessGame {
             imgs[9] = ImageIO.read(new File("src/White p.png"));
             imgs[10] = ImageIO.read(new File("src/White q.png"));
             imgs[11] = ImageIO.read(new File("src/White r.png"));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
         System.out.println("Checkpoint 2");
         JFrame frame = new JFrame();
-        frame.setBounds(10, 10, 512, 512);
+        frame.setBounds(0, 0, 512, 512);
         frame.setUndecorated(true);
         System.out.println("Checkpoint 3");
-        JPanel pn=new JPanel(){
+        JPanel p = new JPanel() {
             @Override
             public void paint(Graphics g) {
-                boolean white=true;
-                for(int y= 0;y<8;y++){
-                    for(int x= 0;x<8;x++){
-                        if(white){
-                            g.setColor(new Color(235,235, 208));
-                        }else{
+                boolean white = true;
+                for (int y = 0; y < 8; y++) {
+                    for (int x = 0; x < 8; x++) {
+                        if (white) {
+                            g.setColor(new Color(235, 235, 208));
+                        } else {
                             g.setColor(new Color(119, 148, 85));
 
                         }
-                        g.fillRect(x*64, y*64, 64, 64);
-                        white=!white;
+                        g.fillRect(x * 64, y * 64, 64, 64);
+                        white = !white;
                     }
                     white = !white;
                 }
                 System.out.println("Checkpoint 4");
-                String color = "" + Main.allBoards[0].getBoard();
-                long l = Main.allBoards[1].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[1].get((byte)i)) == 1) {
                         g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
                 }
-                l = Main.allBoards[2].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[2].get((byte)i)) == 1) {
                         g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
                 }
-                l = Main.allBoards[3].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[3].get((byte)i)) == 1) {
                         g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 6, this);
                     }
                 }
-                l = Main.allBoards[4].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[4].get((byte)i)) == 1) {
                         g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 61, this);
                     }
                 }
-                l = Main.allBoards[5].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[5].get((byte)i)) == 1) {
                         g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
                 }
-                l = Main.allBoards[6].getBoard();
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[6].get((byte)i)) == 1) {
                         g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);

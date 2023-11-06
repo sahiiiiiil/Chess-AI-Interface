@@ -16,15 +16,35 @@ public class PrecomputedData {
             distance[i][7] = (byte)(Math.min(distance[i][1], distance[i][3]));
         }
     }
-    public static ArrayList<Byte[]> generateMoves(BitBoard[] boards) {
+    public static ArrayList<Byte[]> generateMoves(BitBoard[] boards, byte moveInfo) {
         ArrayList<Byte[]> moves = new ArrayList<>(10);
         for (int square = 0; square < 64; square++) {
-            if (boards[1].get((byte)square)) {
+            if (boards[1].get(square) == 1) {
                 //There is a pawn here
                 //generate all pawn moves
+                if (square >= 48 && boards[0].get(square) == 1) {
+                    // first move
+                }
             }
-            if (boards[2].get((byte)square)) {
+            if (boards[2].get(square) == 1) {
                 //There is a bishop here
+                //generate all bishop moves
+
+            }
+            if (boards[3].get((byte)square) == 1) {
+                //There is a knight here
+                //generate all bishop moves
+            }
+            if (boards[4].get((byte)square) == 1) {
+                //There is a rook here
+                //generate all bishop moves
+            }
+            if (boards[5].get((byte)square) == 1) {
+                //There is a queen here
+                //generate all bishop moves
+            }
+            if (boards[6].get((byte)square) == 1) {
+                //There is a king here
                 //generate all bishop moves
             }
         }

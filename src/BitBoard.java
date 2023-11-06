@@ -8,7 +8,7 @@ public class BitBoard {
     public long getBoard(){
         return this.board;
     }
-    public byte get(byte index) {
+    public byte get(int index) {
         return (byte)((board>>index)%2);
     }
 }

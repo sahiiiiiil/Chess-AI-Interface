@@ -21,7 +21,6 @@ public class ChessGame {
     public ChessGame() {
             PrecomputedData.precompute();
         Image[] imgs = new Image[12];
-        System.out.println("Checkpoint 1");
         try {
 
             imgs[0] = ImageIO.read(new File("src/Black b.png"));
@@ -40,11 +39,9 @@ public class ChessGame {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("Checkpoint 2");
         JFrame frame = new JFrame();
         frame.setBounds(0, 0, 512, 512);
         frame.setUndecorated(true);
-        System.out.println("Checkpoint 3");
         JPanel p = new JPanel() {
             @Override
             public void paint(Graphics g) {
@@ -62,7 +59,6 @@ public class ChessGame {
                     }
                     white = !white;
                 }
-                System.out.println("Checkpoint 4");
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[1].get((byte)i)) == 1) {
                         g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
@@ -93,7 +89,6 @@ public class ChessGame {
                         g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
                     }
                 }
-                System.out.println("Checkpoint 5");
             }
         };
         frame.add(p);

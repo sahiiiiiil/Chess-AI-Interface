@@ -9,6 +9,6 @@ public class BitBoard {
         return this.board;
     }
     public byte get(int index) {
-        return (byte)((board>>index)%2);
+        return (byte)(Math.abs((board>>(63-index))%2));
     }
 }

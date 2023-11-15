@@ -25,11 +25,6 @@ public class Main {
         System.out.println(PrecomputedData.generateMoves(allBoards, moveInfo).size());
         for (short s : PrecomputedData.generateMoves(allBoards, moveInfo)) {
             System.out.println(MoveInfo.moveTranslator(s));
-            for (int i = 15; i >= 0; i--) {
-                System.out.print(Math.abs((s>>i)%2));
-            }
-            System.out.println();
-            System.out.println();
         }
     }
 }

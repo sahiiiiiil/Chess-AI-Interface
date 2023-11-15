@@ -18,7 +18,6 @@ public class MoveInfo {
         int piece = 0;
         for (int i = 0; i < 6; i++) {
             end += Math.abs(((move>>i)%2)) * Math.pow(2, i);
-            System.out.println("Current BIN: " + Math.abs((move>>i)%2) + ", current end: " + end);
         }
         for (int i = 6; i < 12; i++) {
             start += Math.abs(((move>>i)%2)) * Math.pow(2, i-6);
@@ -38,9 +37,6 @@ public class MoveInfo {
         if (move < 0 && !s.equals("En passant ")) {
             s+= "captures ";
         }
-        System.out.println(start);
-        System.out.println(end);
-        System.out.println(piece);
         if (start%8 == 0) {
             s += "from " + 'A' + ((64 - start) / 8);
         }

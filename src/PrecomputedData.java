@@ -26,13 +26,13 @@ public class PrecomputedData {
                 //generate all pawn moves
                 if (square >= 48 && boards[0].get(square) == 1) {
                     // first move for this white pawn
-                    if (boards[7].get(square+directions[0]) != 0 && boards[7].get(square+2*directions[0]) != 0) {
+                    if (boards[7].get(square-8) == 0 && boards[7].get(square-16) == 0) {
                         moves.add((short)((square<<6)+square+2*directions[0]));
                     }
                 }
                 if (square <= 15 && boards[0].get(square) == 0) {
                     // first move for this black pawn
-                    if (boards[7].get(square+directions[1]) != 0 && boards[7].get(square+2*directions[1]) != 0) {
+                    if (boards[7].get(square+8) == 0 && boards[7].get(square+16) == 0) {
                         moves.add((short)((square<<6)+square+2*directions[1]));
                     }
                 }
@@ -119,14 +119,14 @@ public class PrecomputedData {
 
 
             if ((boards[2].get(square) == 1 || boards[5].get(square) == 1)
-                    && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
+                && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
                 //There is a bishop or queen here
                 //generate all bishop moves
                 for (int direction = 4; direction < 8; direction++) {
                     for (int i = 0; i < distance[square][direction]; i++) {
                         int nextSquare = square+directions[direction];
                         if (boards[7].get(nextSquare) != 0) {
-                            if (boards[0].get(nextSquare)== moveInfo>>12) {
+                            if (boards[0].get(nextSquare)==MoveInfo.whiteTurnBinary(moveInfo)) {
                                 //it is a teammate
                                 break;
                             }
@@ -233,7 +233,7 @@ public class PrecomputedData {
                     for (int i = 0; i < distance[square][direction]; i++) {
                         int nextSquare = square+directions[direction];
                         if (boards[7].get(nextSquare) != 0) {
-                            if (boards[0].get(nextSquare)== moveInfo>>12) {
+                            if (boards[0].get(nextSquare)==MoveInfo.whiteTurnBinary(moveInfo)) {
                                 //it is a teammate
                                 break;
                             }
@@ -262,7 +262,17 @@ public class PrecomputedData {
 
             if (boards[6].get(square) == 1 && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
                 //There is a king here
-                //generate all king moves
+                //generate all king moves including castling
+                for (int i = 0; i < 8; i++) {
+                    if (distance[square][i] > 0) {
+                        if (boards[7].get(square+directions[i]) == 0) {
+                            moves.add((short)(0b0101000000000000 + (square<<6) + square+directions[i]));
+                        }
+                        else if (boards[0].get(square+directions[i])!=MoveInfo.whiteTurnBinary(moveInfo)) {
+                            moves.add((short)(0b1101000000000000 + (square<<6) + square+directions[i]));
+                        }
+                    }
+                }
             }
 
 

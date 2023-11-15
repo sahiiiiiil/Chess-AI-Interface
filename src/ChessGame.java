@@ -40,7 +40,7 @@ public class ChessGame {
             System.exit(1);
         }
         JFrame frame = new JFrame();
-        frame.setBounds(0, 0, 512, 512);
+        frame.setBounds(0, 0, 720, 720);
         frame.setUndecorated(true);
         JPanel p = new JPanel() {
             @Override
@@ -54,39 +54,39 @@ public class ChessGame {
                             g.setColor(new Color(119, 148, 85));
 
                         }
-                        g.fillRect(x * 64, y * 64, 64, 64);
+                        g.fillRect(x * 90, y * 90, 90, 90);
                         white = !white;
                     }
                     white = !white;
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[1].get((byte)i)) == 1) {
-                        g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
+                        g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[2].get((byte)i)) == 1) {
-                        g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
+                        g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[3].get((byte)i)) == 1) {
-                        g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 6, this);
+                        g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[4].get((byte)i)) == 1) {
-                        g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 62, ((63-i) / 8) * 61, this);
+                        g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[5].get((byte)i)) == 1) {
-                        g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
+                        g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[6].get((byte)i)) == 1) {
-                        g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 64, ((63-i) / 8) * 64, this);
+                        g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
                     }
                 }
             }

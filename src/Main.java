@@ -22,6 +22,7 @@ public class Main {
         allBoards[6] = new BitBoard(0B00001000_00000000_00000000_00000000_00000000_00000000_00000000_00001000L);
         allBoards[7] = new BitBoard(0B11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111L);
         new ChessGame();
+
         System.out.println(PrecomputedData.generateMoves(allBoards, moveInfo).size());
         for (short s : PrecomputedData.generateMoves(allBoards, moveInfo)) {
             System.out.println(MoveInfo.moveTranslator(s));

@@ -11,14 +11,44 @@ import java.util.LinkedList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  *
  * @author Khouiled
  */
-public class ChessGame {
+class ChessPiece extends JLabel {
+    private int offsetX, offsetY;
+    private void enableDragAndDrop() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                offsetX = e.getX();
+                offsetY = e.getY();
+            }
+        });
 
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                setLocation(getX() + e.getX() - offsetX, getY() + e.getY() - offsetY);
+            }
+        });
+    }
+    public ChessPiece(String pieceImage) {
+        super(new ImageIcon(pieceImage));
+        setSize(60, 60); // Assuming each piece has a size of 60x60
+        enableDragAndDrop();
+    }
+
+
+}
+public class ChessGame extends JLabel {
     public ChessGame() {
+
             PrecomputedData.precompute();
         Image[] imgs = new Image[12];
         try {
@@ -42,7 +72,7 @@ public class ChessGame {
         JFrame frame = new JFrame();
         frame.setBounds(0, 0, 720, 720);
         frame.setUndecorated(true);
-        JPanel p = new JPanel() {
+        JPanel chessboardPanel = new JPanel() {
             @Override
             public void paint(Graphics g) {
                 boolean white = true;
@@ -90,9 +120,14 @@ public class ChessGame {
                     }
                 }
             }
+
         };
-        frame.add(p);
+        frame.add(chessboardPanel);
         frame.setDefaultCloseOperation(3);
         frame.setVisible(true);
+
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ChessGame());
     }
 }

@@ -4,6 +4,7 @@ import jdk.jfr.StackTrace;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,34 +23,78 @@ import java.awt.*;
  */
 class ChessPiece extends JLabel {
     private int offsetX, offsetY;
+
+    public ChessPiece(String pieceImage) {
+        super(new ImageIcon(pieceImage));
+        setSize(60, 60); // Assuming each piece has a size of 60x60
+    }
+
+
+}
+public class ChessGame extends JLabel {
+    private int offsetX, offsetY;
+    private ChessPiece draggedPiece;
+
     private void enableDragAndDrop() {
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 offsetX = e.getX();
                 offsetY = e.getY();
+                System.out.println(offsetX);
+                System.out.println(offsetY);
+                Component component = getComponentAt(e.getPoint());
+                if (component instanceof ChessPiece) {
+                    draggedPiece = (ChessPiece) component;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (draggedPiece != null) {
+                    int fromSquare = getSquareIndex(draggedPiece.getLocation());
+                    int toSquare = getSquareIndex(e.getPoint());
+
+                    // Update main.allBoards based on the drag-and-drop
+                    // (You may need to adjust this logic based on your piece representation)
+                    int pieceIndex = 0; // Change this to determine the piece type
+                    //https://stackoverflow.com/questions/1073318/in-java-is-it-possible-to-clear-a-bit
+                    long fromMask = 1L << fromSquare;
+                    long toMask = 1L << toSquare;
+                    // Clear the from bit
+                    Main.allBoards[pieceIndex].board &= ~fromMask;
+                    // Set the to bit
+                    Main.allBoards[pieceIndex].board |= toMask;
+
+                    draggedPiece.setLocation((7 - toSquare / 8) * 90, (toSquare % 8) * 90);
+                    draggedPiece = null;
+                    repaint();
+                }
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                setLocation(getX() + e.getX() - offsetX, getY() + e.getY() - offsetY);
+                if (draggedPiece != null) {
+                    draggedPiece.setLocation(getX() + e.getX() - offsetX, getY() + e.getY() - offsetY);
+                }
+                repaint();
+                System.out.println(1);
             }
         });
     }
-    public ChessPiece(String pieceImage) {
-        super(new ImageIcon(pieceImage));
-        setSize(60, 60); // Assuming each piece has a size of 60x60
-        enableDragAndDrop();
+
+    private int getSquareIndex(Point point) {
+        int row = 7 - point.y / 90;
+        int col = point.x / 90;
+        return row * 8 + col;
     }
 
-
-}
-public class ChessGame extends JLabel {
     public ChessGame() {
 
-            PrecomputedData.precompute();
+        PrecomputedData.precompute();
         Image[] imgs = new Image[12];
         try {
 
@@ -69,6 +114,9 @@ public class ChessGame extends JLabel {
             e.printStackTrace();
             System.exit(1);
         }
+        System.out.println(1);
+        enableDragAndDrop();
+        System.out.println(1);
         JFrame frame = new JFrame();
         frame.setBounds(0, 0, 720, 720);
         frame.setUndecorated(true);

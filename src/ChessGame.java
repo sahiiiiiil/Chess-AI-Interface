@@ -25,14 +25,19 @@ import java.awt.*;
 
 
 
-}
+
 public class ChessGame extends JLabel {
+    private ArrayList<Short> allowedMoves;
     private int offsetX, offsetY;
-    private ChessPiece draggedPiece;
+    private int original_square;
+    private int x, y;
+    private Image draggedPiece;
+    private JPanel chessboardPanel;
 
-    private void enableDragAndDrop() {
 
-        addMouseListener(new MouseAdapter() {
+    private void enableDragAndDrop(JPanel panel) {
+
+        panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 System.out.println("pressed");
@@ -52,12 +57,33 @@ public class ChessGame extends JLabel {
                 if (pieceVal/8 == 1) {
                     imagePath += "White ";
                 }
+                else {
+                    imagePath += "Black ";
+                }
+                if (pieceVal%8 ==1) {imagePath += "p.png";}
+                if (pieceVal%8 ==2) {imagePath += "b.png";}
+                if (pieceVal%8 ==3) {imagePath += "n.png";}
+                if (pieceVal%8 ==4) {imagePath += "r.png";}
+                if (pieceVal%8 ==5) {imagePath += "q.png";}
+                if (pieceVal%8 ==6) {imagePath += "k.png";}
+                //get image
+                if (imagePath.equals("src/White ")) {
+                    draggedPiece = null;
+                }
+                else {
+                    System.out.println("Image Path: " + imagePath);
+                    try {
+                        draggedPiece = ImageIO.read(new File(imagePath));
+                    } catch (IOException f) {
+                        f.printStackTrace();
+                    }
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (draggedPiece != null) {
-                    int fromSquare = getSquareIndex(draggedPiece.getLocation());
+                    int fromSquare = original_square;
                     int toSquare = getSquareIndex(e.getPoint());
                     // Update main.allBoards based on the drag-and-drop
                     // (You may need to adjust this logic based on your piece representation)
@@ -137,14 +163,14 @@ public class ChessGame extends JLabel {
             }
         });
 
-        addMouseMotionListener(new MouseAdapter() {
+        panel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (draggedPiece != null) {
-                    draggedPiece.setLocation(getX() + e.getX() - offsetX, getY() + e.getY() - offsetY);
+                    x = e.getX()-offsetX;
+                    y = e.getY()-offsetY;
                 }
-                repaint();
-                System.out.println(1);
+                chessboardPanel.repaint();
             }
         });
     }
@@ -158,6 +184,7 @@ public class ChessGame extends JLabel {
     public ChessGame() {
 
         PrecomputedData.precompute();
+        allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo);
         Image[] imgs = new Image[12];
         try {
 
@@ -177,13 +204,10 @@ public class ChessGame extends JLabel {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println(1);
-        enableDragAndDrop();
-        System.out.println(1);
         JFrame frame = new JFrame();
         frame.setBounds(0, 0, 720, 720);
         frame.setUndecorated(true);
-        JPanel chessboardPanel = new JPanel() {
+        chessboardPanel = new JPanel() {
             @Override
             public void paint(Graphics g) {
                 boolean white = true;
@@ -201,38 +225,48 @@ public class ChessGame extends JLabel {
                     white = !white;
                 }
                 for (int i = 0; i < 64; i++) {
+                    if (draggedPiece != null && i == original_square) {continue;}
                     if (Math.abs(Main.allBoards[1].get((byte)i)) == 1) {
-                        g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        g.drawImage(imgs[3 + Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
+                    if (draggedPiece != null && i == original_square) {continue;}
                     if (Math.abs(Main.allBoards[2].get((byte)i)) == 1) {
-                        g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        g.drawImage(imgs[Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
+                    if (draggedPiece != null && i == original_square) {continue;}
                     if (Math.abs(Main.allBoards[3].get((byte)i)) == 1) {
-                        g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        g.drawImage(imgs[2 + Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
+                    if (draggedPiece != null && i == original_square) {continue;}
                     if (Math.abs(Main.allBoards[4].get((byte)i)) == 1) {
-                        g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        g.drawImage(imgs[5 + Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[5].get((byte)i)) == 1) {
-                        g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        if (draggedPiece != null && i == original_square) {continue;}
+                        g.drawImage(imgs[4 + Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
                 }
                 for (int i = 0; i < 64; i++) {
                     if (Math.abs(Main.allBoards[6].get((byte)i)) == 1) {
-                        g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], ((63-i) % 8) * 90-6, ((63-i) / 8) * 90-10, this);
+                        if (draggedPiece != null && i == original_square) {continue;}
+                        g.drawImage(imgs[1 + Main.allBoards[0].get((byte)i) * 6], (i % 8) * 90-6, (i / 8) * 90-10, this);
                     }
+                }
+                if (draggedPiece != null) {
+                    g.drawImage(draggedPiece, x, y, this);
                 }
             }
 
         };
+        enableDragAndDrop(chessboardPanel);
         frame.add(chessboardPanel);
         frame.setDefaultCloseOperation(3);
         frame.setVisible(true);
@@ -241,5 +275,20 @@ public class ChessGame extends JLabel {
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new ChessGame());
+    }
+    public static long setBit(long value, int index, short bit) {
+        // Check if the index is within the valid range for a long (0 to 63)
+        if (index < 0 || index > 63) {
+            throw new IllegalArgumentException("Index must be between 0 and 63 (inclusive)");
+        }
+
+        // Use bitwise OR to set the bit at the specified index to 1
+        if (bit == 1) {
+            return value | (1L << index);
+        }
+        else {
+            long mask = ~(1L << index);
+            return value & mask;
+        }
     }
 }

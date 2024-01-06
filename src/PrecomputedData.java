@@ -17,6 +17,7 @@ public class PrecomputedData {
         }
     }
     public static ArrayList<Short> generateMoves(BitBoard[] boards, short moveInfo) {
+        System.out.println("is white move: " + MoveInfo.isWhiteTurn(moveInfo));
         ArrayList<Short> moves = new ArrayList<>(10);
         // 0 (capture or not) 000 (piece moved) 000000 (start square) 000000 (end square)
         // piece moved will be: 000 pawn, 001 bishop, 010 knight, 011 rook, 100 queen, 101 king, 110 promoting pawn, 111 en passant
@@ -273,6 +274,7 @@ public class PrecomputedData {
                         }
                     }
                 }
+                // add castling
             }
 
 

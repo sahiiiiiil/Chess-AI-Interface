@@ -1,14 +1,18 @@
 public class MoveInfo {
-    // first bit is empty
-    // second bit is if white can castle (1 is yes)
-    // third bit is if black can castle (1 is yes)
-    // fourth bit is if it is white's turn or not (1 is yes)
+    // first bit is if white can caste left (1 is yes)
+    // second bit is if white can castle right (1 is yes)
+    // third bit is if black can castle left (1 is yes)
+    // third bit is if black can castle right (1 is yes)
     // bits 5-10 are the starting square of the previous move
     // last 6 bits are the ending square of the previous move
     public static boolean whiteCanCastle(short prev) {return prev>>14 != 0;}
     public static boolean blackCanCaste(short prev) {return prev>>13 != 0;}
-    public static boolean isWhiteTurn(short prev) {return prev>>12 != 0;}
-    public static byte whiteTurnBinary(short prev) {return (byte)((prev>>12)%2);}
+    public static boolean isWhiteTurn(short prev) {
+        return Main.allBoards[0].get(previousEndSquare(prev)) == 0;
+    }
+    public static byte whiteTurnBinary(short prev) {
+        return Main.allBoards[0].get(previousEndSquare(prev));
+    }
     public static byte previousStartSquare(short prev) {return (byte)((prev>>6)%64);}
     public static byte previousEndSquare(short prev) {return (byte)(prev%64);}
     public static String moveTranslator(short move) {
@@ -50,5 +54,35 @@ public class MoveInfo {
             s += " to " + ((char) (65 + (end % 8))) + ((64 - end) / 8 + 1);
         }
         return s;
+    }
+    public static short getMoveInfo(short move, short oldMoveInfo) {
+        short newMoveInfo = oldMoveInfo;
+        if (Math.abs(move<<12) == 5 && isWhiteTurn(oldMoveInfo)) {
+            short mask = (short)0b0011111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        else if (Math.abs(move<<12) == 5 && !isWhiteTurn(oldMoveInfo)) {
+            short mask = (short)0b1100111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        else if (Math.abs(move<<12) == 3 && isWhiteTurn(oldMoveInfo) && Math.abs(move%64) == 56) {
+            short mask = (short)0b0111111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        else if (Math.abs(move<<12) == 3 && isWhiteTurn(oldMoveInfo) && Math.abs(move%64) == 63) {
+            short mask = (short)0b1011111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        else if (Math.abs(move<<12) == 3 && isWhiteTurn(oldMoveInfo) && Math.abs(move%64) == 0) {
+            short mask = (short)0b1110111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        else if (Math.abs(move<<12) == 3 && isWhiteTurn(oldMoveInfo) && Math.abs(move%64) == 7) {
+            short mask = (short)0b1101111111111111;
+            newMoveInfo = (short)(newMoveInfo & mask);
+        }
+        short mask = (short)(move%4096);
+        newMoveInfo = (short)(newMoveInfo | mask);
+        return newMoveInfo;
     }
 }

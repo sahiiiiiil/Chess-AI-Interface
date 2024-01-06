@@ -4,14 +4,14 @@ public class Main {
     public static short moveInfo;
     // reference the MoveInfo class for what this does
     public static void main(String[] args){
-        //allBoards[0] will be 1s for if the piece is white, 0 otherwise
-        //allBoards[1] will be 1s for pawns 0 otherwise
+        //allBoards[0] will be 1s for if the piece is white, 0 otherwise.
+        //allBoards[1] will be 1s for pawns 0 otherwise.
         //allBoards[2] will be 1s for bishops 0 otherwise.
-        //allBoards[3] will be 1s for knights 0 otherwise..
+        //allBoards[3] will be 1s for knights 0 otherwise.
         //allBoards[4] will be 1s for rooks 0 otherwise.
         //allBoards[5] will be 1s for queen 0 otherwise.
         //allBoards[6] will be 1s for king 0 otherwise.
-        //allBoards[7] will be 1s for any piece and 0 otherwise
+        //allBoards[7] will be 1s for any piece and 0 otherwise.
         moveInfo = 0b0111000000000000;
         allBoards[0] = new BitBoard(0B00000000_00000000_00000000_00000000_00000000_00000000_11111111_11111111L);
         allBoards[1] = new BitBoard(0B00000000_11111111_00000000_00000000_00000000_00000000_11111111_00000000L);
@@ -27,5 +27,14 @@ public class Main {
         for (short s : PrecomputedData.generateMoves(allBoards, moveInfo)) {
             System.out.println(MoveInfo.moveTranslator(s));
         }
+    }
+    public static int getPieceOn(int square) {
+        for (int i = 1; i < 7; i++) {
+            if (allBoards[i].get(square) == 1){
+                if (allBoards[0].get(square) == 1) {i+=8;}
+                return i;
+            }
+        }
+        return 0;
     }
 }

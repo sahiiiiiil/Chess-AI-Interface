@@ -11,8 +11,13 @@ public class MoveInfo {
         return Main.allBoards[0].get(previousEndSquare(prev)) == 0;
     }
     public static byte whiteTurnBinary(short prev) {
-        return Main.allBoards[0].get(previousEndSquare(prev));
-    }
+        if( Main.allBoards[0].get(previousEndSquare(prev)) ==0){
+            return 1;
+        } else if (Main.allBoards[0].get(previousEndSquare(prev)) == 1){
+            return 0;
+        }
+        return 0;
+    } //
     public static byte previousStartSquare(short prev) {return (byte)((prev>>6)%64);}
     public static byte previousEndSquare(short prev) {return (byte)(prev%64);}
     public static String moveTranslator(short move) {
@@ -81,7 +86,10 @@ public class MoveInfo {
             short mask = (short)0b1101111111111111;
             newMoveInfo = (short)(newMoveInfo & mask);
         }
+        short mask0 = (short)0b1111000000000000;
+        newMoveInfo = (short)(newMoveInfo & mask0);
         short mask = (short)(move%4096);
+        System.out.println("mask: " + ChessGame.toBinary(mask));
         newMoveInfo = (short)(newMoveInfo | mask);
         return newMoveInfo;
     }

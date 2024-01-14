@@ -44,13 +44,8 @@ public class ChessGame extends JLabel {
                 offsetX = e.getX()%90;
                 offsetY = e.getY()%90;
                 Point point = new Point(e.getX(), e.getY());
-                System.out.println("X Offset: " + offsetX);
-                System.out.println("Y Offset: " + offsetY);
-                System.out.println("X: " + e.getX());
-                System.out.println("Y: " + e.getY());
                 //get square--
                 original_square = getSquareIndex(point);
-                System.out.println("Square: " + original_square);
                 //get piece on square
                 int pieceVal = Main.getPieceOn(original_square);
                 String imagePath = "src/";
@@ -67,7 +62,7 @@ public class ChessGame extends JLabel {
                 if (pieceVal%8 ==5) {imagePath += "q.png";}
                 if (pieceVal%8 ==6) {imagePath += "k.png";}
                 //get image
-                if (imagePath.equals("src/White ")) {
+                if (imagePath.equals("src/White ") || imagePath.equals("src/Black ")) {
                     draggedPiece = null;
                 }
                 else {
@@ -130,6 +125,7 @@ public class ChessGame extends JLabel {
                     move = (short)(move | mask);
                     mask = (short)(toSquare);
                     move = (short)(move | mask);
+                    System.out.println("Move binary: " + toBinary(move));
                     // compare it to the allowedMoves
                     // make move if its allowed
                     if (allowedMoves.contains(move)) {
@@ -143,12 +139,33 @@ public class ChessGame extends JLabel {
                             }
                             Main.allBoards[i].board = setBit(Main.allBoards[i].board, 63 - toSquare, b);
                         }
+                        System.out.println(Math.abs((move>>12)%2));
+                        System.out.println(Math.abs((move>>13)%2));
+                        System.out.println(Math.abs((move>>14)%2));
+                        System.out.println(Math.abs((move>>15)%2));
+                        boolean enPassant = Math.abs((move>>12)%2) == 1 && Math.abs((move>>13)%2) == 1
+                                && Math.abs((move>>14)%2) == 1 && Math.abs((move>>15)%2) == 1;
+                        if (enPassant && MoveInfo.isWhiteTurn(Main.moveInfo)) {
+                            Main.allBoards[1].board = setBit(Main.allBoards[1].board, 63 - toSquare - 8, (short)0);
+                            Main.allBoards[0].board = setBit(Main.allBoards[0].board, 63 - toSquare - 8, (short)0);
+                            Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - toSquare - 8, (short)0);
+                        }
+                        else if (enPassant && !MoveInfo.isWhiteTurn(Main.moveInfo)) {
+                            Main.allBoards[1].board = setBit(Main.allBoards[1].board, 63 - toSquare + 8, (short)0);
+                            Main.allBoards[0].board = setBit(Main.allBoards[0].board, 63 - toSquare + 8, (short)0);
+                            Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - toSquare + 8, (short)0);
+                        }
 
 
                         //edit the color bitboard
                         Main.allBoards[0].board = setBit(Main.allBoards[0].board, 63 - fromSquare, (short) 0);
                         Main.allBoards[0].board = setBit(Main.allBoards[0].board, 63 - toSquare, (short) (pieceVal / 8));
+                        //edit the piece board
+                        Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - fromSquare, (short) 0);
+                        Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - toSquare, (short) 1);
                         Main.moveInfo = MoveInfo.getMoveInfo(move, Main.moveInfo);
+                        System.out.println("MoveInfo binary: " + toBinary(Main.moveInfo));
+                        System.out.println("Color Board binary: " + toBinary(Main.allBoards[0].board));
                         allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo);
                         for (short moves : allowedMoves) {
                             System.out.println(MoveInfo.moveTranslator(moves));
@@ -158,7 +175,6 @@ public class ChessGame extends JLabel {
                     y = (toSquare % 8) * 90;
                     draggedPiece = null;
                     chessboardPanel.repaint();
-                    System.out.println("released" + "x cord:" + x + "y cord:" + y + "toSquare:" + toSquare);
                 }
             }
         });
@@ -290,5 +306,19 @@ public class ChessGame extends JLabel {
             long mask = ~(1L << index);
             return value & mask;
         }
+    }
+    public static String toBinary(short s){
+        String ret = "";
+        for (int i = 0; i < 16; i++) {
+            ret=Math.abs((s>>i)%2) + ret;
+        }
+        return ret;
+    }
+    public static String toBinary(long l){
+        String ret = "";
+        for (int i = 0; i < 64; i++) {
+            ret=Math.abs((l>>i)%2) + ret;
+        }
+        return ret;
     }
 }

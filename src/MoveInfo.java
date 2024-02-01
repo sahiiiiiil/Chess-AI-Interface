@@ -92,5 +92,6 @@ public class MoveInfo {
         System.out.println("mask: " + ChessGame.toBinary(mask));
         newMoveInfo = (short)(newMoveInfo | mask);
         return newMoveInfo;
+
     }
 }

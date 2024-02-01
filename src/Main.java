@@ -12,6 +12,10 @@ public class Main {
         //allBoards[5] will be 1s for queen 0 otherwise.
         //allBoards[6] will be 1s for king 0 otherwise.
         //allBoards[7] will be 1s for any piece and 0 otherwise.
+        //allBoards[8] will be 1s if white is attacking that square
+        //allBoards[9] will be 1s if black is attacking that square
+        //allBoards[10] will be 1s if the black piece on that square is pinned to the black king
+        //allBoards[11] will be 1s if the white piece on that square is pinned to the white king
         moveInfo = 0b0111000000000000;
         allBoards[0] = new BitBoard(0B00000000_00000000_00000000_00000000_00000000_00000000_11111111_11111111L);
         allBoards[1] = new BitBoard(0B00000000_11111111_00000000_00000000_00000000_00000000_11111111_00000000L);
@@ -37,4 +41,6 @@ public class Main {
         }
         return 0;
     }
+
+
 }

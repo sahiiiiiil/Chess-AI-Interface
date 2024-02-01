@@ -90,6 +90,7 @@ public class ChessGame extends JLabel {
                     if (Main.allBoards[7].get(toSquare) != 0) {
                         short mask = (short)0b1000000000000000;
                         move = (short)(move | mask);
+
                     }
                     if (pieceIndex == 1 && move == 0 && (Math.abs(original_square-toSquare) == 7 || Math.abs(original_square-toSquare) == 9)) {
                         //pawn that didn't capture
@@ -128,7 +129,18 @@ public class ChessGame extends JLabel {
                     System.out.println("Move binary: " + toBinary(move));
                     // compare it to the allowedMoves
                     // make move if its allowed
-                    if (allowedMoves.contains(move)) {
+                    System.out.println("main.allboards[8]: " + Main.allBoards[8].get(Main.blackKing));
+                    System.out.println("black king: " + Main.blackKing);
+                    System.out.println("main.allboards[9]: " + Main.allBoards[9].get(Main.whiteKing));
+                    System.out.println("white king: " + Main.whiteKing);
+                    if (allowedMoves.contains(move)){
+
+//                            && ((MoveInfo.isWhiteTurn(Main.moveInfo)
+//                            && Main.allBoards[9].get(Main.whiteKing) == 0
+//                            && Main.allBoards[11].get(original_square) == 0)
+//                            || (!MoveInfo.isWhiteTurn(Main.moveInfo)
+//                            && Main.allBoards[8].get(Main.blackKing) == 0
+//                            && Main.allBoards[10].get(original_square) == 0 ))) {
                         // Clear the from bit
                         Main.allBoards[pieceIndex].board = setBit(Main.allBoards[pieceIndex].board, 63 - fromSquare, (short) 0);
                         // Set the to bit
@@ -279,6 +291,7 @@ public class ChessGame extends JLabel {
                 if (draggedPiece != null) {
                     g.drawImage(draggedPiece, x, y, this);
                 }
+
             }
 
         };

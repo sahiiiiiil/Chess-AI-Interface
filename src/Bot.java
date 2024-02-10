@@ -1,19 +1,15 @@
 import java.util.HashMap;
 
 public class Bot {
-    private BitBoard[] realBoards;
-    public Bot() {
-        realBoards = Main.allBoards;
-    }
-    public short getBestMove(int depth) {
-        minimax(depth, realBoards);
+    public static short getBestMove(int depth, MoveHelper info) {
+        minimax(depth, info, false);
         return 0;
     }
-    private double minimax(int depth, BitBoard[] boards) {
-        if (depth == 0) {return evaluate(boards);}
+    private static double minimax(int depth, MoveHelper info, boolean lastMoveCapture) {
+//        boolean wasCapture = prevMove < 0;
+//        if ((depth == 0 && !wasCapture) || depth < -3) {return evaluate(boards);}
+//
         return 0;
     }
-    private double evaluate(BitBoard[] boards) {
-        return 0;
-    }
+    private static double evaluate(BitBoard[] boards) {return 0;}
 }

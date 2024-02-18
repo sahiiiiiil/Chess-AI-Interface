@@ -22,6 +22,11 @@ public class PrecomputedData {
         // 0 (capture or not) 000 (piece moved) 000000 (start square) 000000 (end square)
         // piece moved will be: 000 pawn, 001 bishop, 010 knight, 011 rook, 100 queen, 101 king, 110 promoting pawn, 111 en passant
         for (int square = 0; square < 64; square++) {
+            // If black or white king is checkmated
+            if (boards[10].get(square) == 1 || boards[11].get(square) == 1) {
+                continue;
+            }
+
             if (boards[1].get(square) == 1 && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
                 //There is a pawn here
                 //generate all pawn moves
@@ -306,12 +311,15 @@ public class PrecomputedData {
             if (boards[6].get(square) == 1 && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
                 //There is a king here
                 //generate all king moves including castling
+                System.out.println(ChessGame.toBinary(boards[8+MoveInfo.whiteTurnBinary(moveInfo)].getBoard()));
+                System.out.println(square);
                 for (int i = 0; i < 8; i++) {
                     if (distance[square][i] > 0) {
                         if (boards[7].get(square+directions[i]) == 0) {
                             moves.add((short)(0b0101000000000000 + (square<<6) + square+directions[i]));
                         }
-                        else if (boards[0].get(square+directions[i])!=MoveInfo.whiteTurnBinary(moveInfo)) {
+                        else if (boards[0].get(square+directions[i])!=MoveInfo.whiteTurnBinary(moveInfo)
+                                && boards[8+MoveInfo.whiteTurnBinary(moveInfo)].get(square+directions[i]) == 0) {
                             moves.add((short)(0b1101000000000000 + (square<<6) + square+directions[i]));
                         }
                     }
@@ -322,5 +330,159 @@ public class PrecomputedData {
 
         }
         return moves;
+    }
+    public static void updateAttacked(boolean whiteMove){
+        int board = whiteMove ? 8 : 9;
+        if (whiteMove) {
+            System.out.print("White board: ");
+        }
+        else {
+            System.out.print("Black board: ");
+        }
+        ArrayList<Byte>[] list = attackingMoves(Main.allBoards, whiteMove);
+        Main.allBoards[board] = movesToBitBoard(list[0]);
+        Main.allBoards[board+2] = movesToBitBoard(list[1]);
+    }
+    public static ArrayList<Byte>[] attackingMoves(BitBoard[] boards, boolean whiteMove) {
+        int whiteTurnBinary = whiteMove ? 1 : 0;
+        ArrayList<Byte> pinned = new ArrayList<>(2);
+        ArrayList<Byte> moves = new ArrayList<>(10);
+        for (int square = 0; square < 64; square++) {
+            if (boards[1].get(square) == 1 && boards[0].get(square) == whiteTurnBinary) {
+                //There is a pawn here
+                //generate all pawn moves
+                if (whiteMove && square % 8 != 7) {
+                    moves.add((byte) (square - 7));
+                }
+                if (whiteMove && square % 8 != 0) {
+                    moves.add((byte)(square-9));
+                }
+                if (!whiteMove&& square % 8 != 0) {
+                    moves.add((byte)(square+7));
+                }
+                if (!whiteMove && square % 8 != 7) {
+                    moves.add((byte)(square+9));
+                }
+                //regular attacking moves done
+            }
+
+
+            if ((boards[2].get(square) == 1 || boards[5].get(square) == 1)
+                    && boards[0].get(square) == whiteTurnBinary) {
+                //There is a bishop or queen here
+                //generate all bishop moves
+                for (int direction = 4; direction < 8; direction++) {
+                    int nextSquare = square + directions[direction];
+                    boolean pieceInLine = false;
+                    byte possiblyPinned = 0;
+                    for (int i = 0; i < distance[square][direction]; i++) {
+                        if (!pieceInLine) {
+                            moves.add((byte) nextSquare);
+                            if (boards[7].get(nextSquare) != 0) {
+                                pieceInLine = true;
+                                possiblyPinned = (byte)nextSquare;
+                            }
+                            if (boards[0].get(possiblyPinned) == whiteTurnBinary) {
+                                break;
+                            }
+                        }
+                        else {
+                            if (boards[7].get(nextSquare) != 0) {
+                                if (boards[6].get(nextSquare) != 0 && boards[0].get(nextSquare) != whiteTurnBinary) {
+                                    pinned.add(possiblyPinned);
+                                }
+                                break;
+                            }
+                        }
+                        nextSquare = nextSquare + directions[direction];
+                    }
+                }
+            }
+
+
+            if (boards[3].get(square) == 1 && boards[0].get(square) == whiteTurnBinary) {
+                //There is a knight here
+                //generate all knight moves
+                int rank = square / 8;
+                int file = square % 8;
+                if (rank > 1 && file > 0) { //up up left
+                    moves.add((byte)(square-17));
+                }
+                if (rank > 1 && file < 7) { //up up right
+                    moves.add((byte)(square-15));
+                }
+                if (rank < 6 && file > 0) { //down down left
+                    moves.add((byte)(square+15));
+                }
+                if (rank < 6 && file < 7) { //down down right
+                    moves.add((byte)(square+17));
+                }
+                if (rank > 0 && file > 1) { //up left left
+                    moves.add((byte)(square-10));
+                }
+                if (rank > 0 && file < 6) { //up right right
+                    moves.add((byte)(square-6));
+                }
+                if (rank < 7 && file > 1) { //down left left
+                    moves.add((byte)(square+6));
+                }
+                if (rank < 7 && file < 6) { //down right right
+                    moves.add((byte)(square+10));
+                }
+            }
+
+
+            if ((boards[4].get(square) != 0 || boards[5].get(square) != 0)
+                    && boards[0].get(square) == whiteTurnBinary) {
+                //There is a rook or queen here
+                //generate all rook moves
+                for (int direction = 0; direction < 4; direction++) {
+                    int nextSquare = square + directions[direction];
+                    boolean pieceInLine = false;
+                    byte possiblyPinned = 0;
+                    for (int i = 0; i < distance[square][direction]; i++) {
+                        if (!pieceInLine) {
+                            moves.add((byte) nextSquare);
+                            if (boards[7].get(nextSquare) != 0) {
+                                pieceInLine = true;
+                                possiblyPinned = (byte)nextSquare;
+                            }
+                            if (boards[0].get(possiblyPinned) == whiteTurnBinary) {
+                                break;
+                            }
+                        }
+                        else {
+                            if (boards[7].get(nextSquare) != 0) {
+                                if (boards[6].get(nextSquare) != 0 && boards[0].get(nextSquare) != whiteTurnBinary) {
+                                    pinned.add(possiblyPinned);
+                                }
+                                break;
+                            }
+                        }
+                        nextSquare = nextSquare + directions[direction];
+                    }
+                }
+            }
+
+
+            if (boards[6].get(square) == 1 && boards[0].get(square) == whiteTurnBinary) {
+                //There is a king here
+                //generate all king moves including castling
+                for (int i = 0; i < 8; i++) {
+                    if (distance[square][i] > 0) {
+                        moves.add((byte)(square+directions[i]));
+                    }
+                }
+            }
+        }
+        return new ArrayList[]{moves, pinned};
+    }
+    public static BitBoard movesToBitBoard(ArrayList<Byte> moves) {
+        BitBoard board = new BitBoard(0);
+        for (Byte b : moves) {
+            board.setToOne((byte)(63-b));
+        }
+        System.out.println(ChessGame.toBinary(board.getBoard()));
+        return board;
     }
 }

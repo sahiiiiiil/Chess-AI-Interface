@@ -126,7 +126,6 @@ public class ChessGame extends JLabel {
                     move = (short)(move | mask);
                     mask = (short)(toSquare);
                     move = (short)(move | mask);
-                    System.out.println("Move binary: " + toBinary(move));
                     // compare it to the allowedMoves
                     // make move if its allowed
                     System.out.println("main.allboards[8]: " + Main.allBoards[8].get(Main.blackKing));
@@ -151,10 +150,13 @@ public class ChessGame extends JLabel {
                             }
                             Main.allBoards[i].board = setBit(Main.allBoards[i].board, 63 - toSquare, b);
                         }
-                        System.out.println(Math.abs((move>>12)%2));
-                        System.out.println(Math.abs((move>>13)%2));
-                        System.out.println(Math.abs((move>>14)%2));
-                        System.out.println(Math.abs((move>>15)%2));
+                        if(pieceIndex==6){
+                            if(Main.allBoards[0].get(toSquare) == 1){
+                                Main.whiteKing = toSquare;
+                            } else{
+                                Main.blackKing = toSquare;
+                            }
+                        }
                         boolean enPassant = Math.abs((move>>12)%2) == 1 && Math.abs((move>>13)%2) == 1
                                 && Math.abs((move>>14)%2) == 1 && Math.abs((move>>15)%2) == 1;
                         if (enPassant && MoveInfo.isWhiteTurn(Main.moveInfo)) {
@@ -176,9 +178,8 @@ public class ChessGame extends JLabel {
                         Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - fromSquare, (short) 0);
                         Main.allBoards[7].board = setBit(Main.allBoards[7].board, 63 - toSquare, (short) 1);
                         Main.moveInfo = MoveInfo.getMoveInfo(move, Main.moveInfo);
-                        System.out.println("MoveInfo binary: " + toBinary(Main.moveInfo));
-                        System.out.println("Color Board binary: " + toBinary(Main.allBoards[0].board));
-                        allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo);
+                        PrecomputedData.updateAttacked(!MoveInfo.isWhiteTurn(Main.moveInfo));
+                        allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo, Main.whiteKing, Main.blackKing);
                         for (short moves : allowedMoves) {
                             System.out.println(MoveInfo.moveTranslator(moves));
                         }
@@ -212,7 +213,7 @@ public class ChessGame extends JLabel {
     public ChessGame() {
 
         PrecomputedData.precompute();
-        allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo);
+        allowedMoves = PrecomputedData.generateMoves(Main.allBoards, Main.moveInfo, Main.whiteKing, Main.blackKing);
         Image[] imgs = new Image[12];
         try {
 

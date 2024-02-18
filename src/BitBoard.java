@@ -11,4 +11,6 @@ public class BitBoard {
     public byte get(int index) {
         return (byte)(Math.abs((board>>(63-index))%2));
     }
+    public void setToOne(byte index) {board = board | (1L << index);}
+    public void set(long b) {this.board = b;}
 }

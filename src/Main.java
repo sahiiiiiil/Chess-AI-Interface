@@ -1,7 +1,9 @@
 // integer board represents board from top left to bottom right, read like a book
 public class Main {
-    public static BitBoard[] allBoards = new BitBoard[8];
+    public static BitBoard[] allBoards = new BitBoard[12];
     public static short moveInfo;
+    public static int blackKing = 4;
+    public static int whiteKing = 60;
     // reference the MoveInfo class for what this does
     public static void main(String[] args){
         //allBoards[0] will be 1s for if the piece is white, 0 otherwise.
@@ -25,12 +27,13 @@ public class Main {
         allBoards[5] = new BitBoard(0B00010000_00000000_00000000_00000000_00000000_00000000_00000000_00010000L);
         allBoards[6] = new BitBoard(0B00001000_00000000_00000000_00000000_00000000_00000000_00000000_00001000L);
         allBoards[7] = new BitBoard(0B11111111_11111111_00000000_00000000_00000000_00000000_11111111_11111111L);
+        allBoards[8] = new BitBoard(0B00000000_00000000_00000000_00000000_00000000_11111111_11111111_01111110L);
+        allBoards[9] = new BitBoard(0B01111110_11111111_11111111_00000000_00000000_00000000_00000000_00000000L);
+        allBoards[10] = new BitBoard(0);
+        allBoards[11] = new BitBoard(0);
         new ChessGame();
 
-        System.out.println(PrecomputedData.generateMoves(allBoards, moveInfo).size());
-        for (short s : PrecomputedData.generateMoves(allBoards, moveInfo)) {
-            System.out.println(MoveInfo.moveTranslator(s));
-        }
+        System.out.println(PrecomputedData.generateMoves(allBoards, moveInfo, whiteKing, blackKing).size());
     }
     public static int getPieceOn(int square) {
         for (int i = 1; i < 7; i++) {

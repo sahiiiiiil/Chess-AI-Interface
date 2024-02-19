@@ -27,6 +27,16 @@ public class PrecomputedData {
             }
 
             if (boards[1].get(square) == 1 && boards[0].get(square) == MoveInfo.whiteTurnBinary(moveInfo)) {
+                //if king is in check only allow moves that block it.
+                int trueKing;
+                if(MoveInfo.whiteTurnBinary(moveInfo) == 1){
+                    trueKing=whiteKing;
+                } else{
+                    trueKing = blackKing;
+                }
+                if(boards[8+MoveInfo.whiteTurnBinary(moveInfo)].get(trueKing) == 1){
+
+                }
                 //There is a pawn here
                 //generate all pawn moves
                 if (square >= 48 && boards[0].get(square) == 1) {

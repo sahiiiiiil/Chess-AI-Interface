@@ -15,7 +15,7 @@ public class PrecomputedData {
             distance[i][6] = (byte)(Math.min(distance[i][1], distance[i][2]));
             distance[i][7] = (byte)(Math.min(distance[i][1], distance[i][3]));
         }
-    }
+    }//
     public static ArrayList<Short> generateMoves(BitBoard[] boards, short moveInfo, int whiteKing, int blackKing) {
         ArrayList<Short> moves = new ArrayList<>(10);
         // 0 (capture or not) 000 (piece moved) 000000 (start square) 000000 (end square)

@@ -61,4 +61,4 @@ public class Bot {
         // Use bitwise XOR to flip the bits
         return num ^ mask;
     }
-}
+}//
